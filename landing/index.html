@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Refunder — Get Back What You're Owed</title>
+  <meta name="description" content="Refunder handles your compensation and refund claims from start to finish. Flights, retail, car disputes — get back what you're owed without the hassle." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & base ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #08090d;
+      --bg-2:       #0e1018;
+      --bg-3:       #141720;
+      --border:     rgba(255,255,255,0.07);
+      --text:       #eef0f6;
+      --muted:      #7a8099;
+      --accent:     #12e888;
+      --accent-dim: rgba(18,232,136,0.12);
+      --blue:       #4f8ef7;
+      --blue-dim:   rgba(79,142,247,0.12);
+      --grad:       linear-gradient(135deg, #12e888, #4f8ef7);
+      --radius:     14px;
+      --radius-lg:  22px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Noise texture overlay ────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Utility ──────────────────────────────────────────────────── */
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+    .grad-text {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid rgba(18,232,136,0.2);
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+
+    /* ── Scroll animation ─────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ── Nav ──────────────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 24px;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(8,9,13,0.85);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--grad);
+      color: #08090d;
+    }
+    .btn-primary:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover {
+      border-color: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.04);
+    }
+    @media (max-width: 680px) {
+      .nav-links { display: none; }
+    }
+
+    /* ── Hero ─────────────────────────────────────────────────────── */
+    #hero {
+      position: relative;
+      padding: 148px 0 100px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 600px;
+      background: radial-gradient(ellipse at center, rgba(18,232,136,0.12) 0%, rgba(79,142,247,0.06) 45%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-stat {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      margin-bottom: 28px;
+    }
+    .hero-stat strong {
+      color: var(--accent);
+    }
+    .hero h1 {
+      font-size: clamp(40px, 7vw, 76px);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--muted);
+      max-width: 580px;
+      margin: 0 auto 48px;
+      line-height: 1.6;
+    }
+    .hero-form {
+      display: flex;
+      gap: 10px;
+      max-width: 480px;
+      margin: 0 auto 18px;
+    }
+    .hero-form input {
+      flex: 1;
+      padding: 14px 18px;
+      border-radius: 100px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .hero-form input::placeholder { color: var(--muted); }
+    .hero-form input:focus { border-color: rgba(18,232,136,0.4); }
+    .hero-form .btn-primary {
+      padding: 14px 24px;
+      border-radius: 100px;
+      font-size: 15px;
+      white-space: nowrap;
+    }
+    .hero-note {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .hero-note span {
+      display: inline-block;
+      margin: 0 8px;
+      opacity: 0.4;
+    }
+    .hero-scroll {
+      margin-top: 72px;
+      display: flex;
+      justify-content: center;
+    }
+    .hero-scroll-inner {
+      display: flex;
+      gap: 12px;
+      padding: 12px 20px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--bg-2);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .hero-scroll-inner .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      align-self: center;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+    @media (max-width: 520px) {
+      .hero-form { flex-direction: column; }
+      .hero-form .btn-primary { border-radius: 100px; }
+    }
+
+    /* ── Section shared ───────────────────────────────────────────── */
+    section { padding: 96px 0; }
+    .section-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .section-header h2 {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .section-header p {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
+
+    /* ── Divider ──────────────────────────────────────────────────── */
+    .divider {
+      border: none;
+      height: 1px;
+      background: var(--border);
+      margin: 0;
+    }
+
+    /* ── Problem ──────────────────────────────────────────────────── */
+    #problem { background: var(--bg); }
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+    .problem-copy h2 {
+      font-size: clamp(28px, 3.5vw, 42px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .problem-copy p {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+    .problem-copy p:last-child { margin-bottom: 0; }
+    .problem-copy p strong { color: var(--text); }
+    .pain-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .pain-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 20px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: border-color 0.3s;
+    }
+    .pain-card:hover { border-color: rgba(255,255,255,0.14); }
+    .pain-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+      width: 44px; height: 44px;
+      background: var(--bg-3);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pain-card h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .pain-card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    @media (max-width: 768px) {
+      .problem-grid { grid-template-columns: 1fr; gap: 48px; }
+    }
+
+    /* ── Solution ─────────────────────────────────────────────────── */
+    #solution { background: var(--bg-2); }
+    .solution-callout {
+      text-align: center;
+      padding: 64px 48px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 64px;
+    }
+    .solution-callout::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% -20%, rgba(18,232,136,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .solution-callout h2 {
+      font-size: clamp(24px, 3.5vw, 40px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    .solution-callout p {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
+
+    /* ── How it works ─────────────────────────────────────────────── */
+    #how { background: var(--bg-2); padding-top: 0; }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      position: relative;
+    }
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 36px;
+      left: calc(16.6% + 20px);
+      right: calc(16.6% + 20px);
+      height: 1px;
+      background: linear-gradient(90deg, rgba(18,232,136,0.4), rgba(79,142,247,0.4));
+    }
+    .step {
+      padding: 28px 24px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      text-align: center;
+      position: relative;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .step:hover {
+      border-color: rgba(18,232,136,0.25);
+      transform: translateY(-3px);
+    }
+    .step-num {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0 auto 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .step-num-1 { background: var(--accent-dim); border: 2px solid rgba(18,232,136,0.35); color: var(--accent); }
+    .step-num-2 { background: rgba(79,142,247,0.12); border: 2px solid rgba(79,142,247,0.35); color: var(--blue); }
+    .step-num-3 { background: linear-gradient(135deg, var(--accent-dim), var(--blue-dim)); border: 2px solid rgba(18,232,136,0.25); color: var(--text); }
+    .step h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+    .step p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    @media (max-width: 680px) {
+      .steps { grid-template-columns: 1fr; }
+      .steps::before { display: none; }
+    }
+
+    /* ── Coverage ─────────────────────────────────────────────────── */
+    #coverage { background: var(--bg); }
+    .coverage-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .coverage-card {
+      padding: 32px 28px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      transition: border-color 0.3s, transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .coverage-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .coverage-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(18,232,136,0.2);
+    }
+    .coverage-card:hover::after { opacity: 1; }
+    .coverage-emoji {
+      font-size: 36px;
+      margin-bottom: 20px;
+      display: block;
+    }
+    .coverage-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    .coverage-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .coverage-amount {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(18,232,136,0.2);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    @media (max-width: 768px) {
+      .coverage-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Roadmap ──────────────────────────────────────────────────── */
+    #roadmap { background: var(--bg-2); }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .roadmap-card {
+      padding: 28px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      position: relative;
+    }
+    .roadmap-card.active {
+      border-color: rgba(18,232,136,0.3);
+      background: linear-gradient(135deg, rgba(18,232,136,0.04), rgba(79,142,247,0.04));
+    }
+    .phase-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .roadmap-card.active .phase-label { color: var(--accent); }
+    .roadmap-card:not(.active) .phase-label { color: var(--muted); }
+    .phase-status {
+      position: absolute;
+      top: 24px; right: 24px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+    .status-live { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(18,232,136,0.25); }
+    .status-next { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(79,142,247,0.25); }
+    .status-planned { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+    .roadmap-card h3 {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .roadmap-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .roadmap-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .roadmap-list li::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--muted);
+      flex-shrink: 0;
+      margin-top: 7px;
+    }
+    .roadmap-card.active .roadmap-list li::before { background: var(--accent); }
+    @media (max-width: 768px) {
+      .roadmap-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Why ──────────────────────────────────────────────────────── */
+    #why { background: var(--bg); }
+    .why-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .why-item {
+      padding: 40px 32px;
+      background: var(--bg-2);
+      transition: background 0.25s;
+    }
+    .why-item:hover { background: var(--bg-3); }
+    .why-item-icon {
+      font-size: 32px;
+      margin-bottom: 18px;
+      display: block;
+    }
+    .why-item h3 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+    .why-item p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    @media (max-width: 680px) {
+      .why-strip { grid-template-columns: 1fr; }
+    }
+
+    /* ── Final CTA ────────────────────────────────────────────────── */
+    #cta {
+      background: var(--bg);
+      padding: 120px 0;
+    }
+    .cta-card {
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 72px 48px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 110%, rgba(18,232,136,0.1) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .cta-card h2 {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+      line-height: 1.15;
+    }
+    .cta-card p {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 36px;
+      line-height: 1.65;
+    }
+    .cta-form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .cta-form input {
+      flex: 1;
+      padding: 14px 18px;
+      border-radius: 100px;
+      background: var(--bg-3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .cta-form input::placeholder { color: var(--muted); }
+    .cta-form input:focus { border-color: rgba(18,232,136,0.4); }
+    .cta-form .btn-primary { padding: 14px 24px; border-radius: 100px; font-size: 15px; }
+    .cta-note {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .success-msg {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 28px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(18,232,136,0.25);
+      border-radius: var(--radius);
+      animation: fadeIn 0.4s ease;
+    }
+    .success-msg.show { display: flex; }
+    .success-msg .check {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #08090d;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+    .success-msg p {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      margin: 0;
+    }
+    .success-msg small { font-size: 13px; color: var(--muted); }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: none; }
+    }
+    @media (max-width: 520px) {
+      .cta-card { padding: 48px 24px; }
+      .cta-form { flex-direction: column; }
+    }
+
+    /* ── Footer ───────────────────────────────────────────────────── */
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .footer-logo {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .footer-legal {
+      font-size: 12px;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.6;
+    }
+    .footer-legal a {
+      color: var(--muted);
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Nav ───────────────────────────────────────────────────────── -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">Refunder</a>
+      <ul class="nav-links">
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#coverage">Coverage</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+      </ul>
+      <a href="#cta" class="btn btn-primary">Join waitlist</a>
+    </div>
+  </nav>
+
+  <!-- ── Hero ──────────────────────────────────────────────────────── -->
+  <section id="hero">
+    <div class="hero-glow"></div>
+    <div class="container">
+      <p class="hero-stat reveal"><strong>£billions</strong> in compensation goes unclaimed every year in the UK alone</p>
+      <h1 class="reveal reveal-delay-1">
+        Stop leaving money<br />
+        <span class="grad-text">on the table.</span>
+      </h1>
+      <p class="hero-sub reveal reveal-delay-2">
+        Refunder handles your refund and compensation claims from start to finish — so you get back what you're owed without lifting a finger.
+      </p>
+      <form class="hero-form reveal reveal-delay-3" id="hero-form">
+        <input type="email" name="EMAIL" placeholder="Enter your email address" required />
+        <input type="text" name="b_10e96d31485b059b474eb5d91_0255c8292f" tabindex="-1" value="" style="position:absolute;left:-5000px;" aria-hidden="true" />
+        <button type="submit" class="btn btn-primary">Get early access →</button>
+      </form>
+      <p class="hero-note reveal reveal-delay-4">
+        Private beta <span>·</span> Free to join <span>·</span> No spam, ever
+      </p>
+      <div class="hero-scroll reveal reveal-delay-4">
+        <div class="hero-scroll-inner">
+          <div class="dot"></div>
+          Currently tracking claims for early users
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ── Problem ───────────────────────────────────────────────────── -->
+  <section id="problem">
+    <div class="container">
+      <div class="problem-grid">
+        <div class="problem-copy reveal">
+          <span class="tag">The problem</span>
+          <h2>The companies that owe you money are <em>counting on you to give up.</em></h2>
+          <p>Every delayed flight, rejected return, and disputed rental charge represents money you're legally entitled to. But claiming it means navigating forms, citing the right legislation, and chasing for weeks — often for a response that takes months.</p>
+          <p><strong>Most people don't bother.</strong> Businesses know that. Their entire refund process is designed around friction.</p>
+        </div>
+        <div class="pain-cards">
+          <div class="pain-card reveal reveal-delay-1">
+            <div class="pain-icon">✈️</div>
+            <div>
+              <h4>Flight delays &amp; cancellations</h4>
+              <p>Airlines have 8 weeks to respond before you can even escalate. Most people give up after the first rejection.</p>
+            </div>
+          </div>
+          <div class="pain-card reveal reveal-delay-2">
+            <div class="pain-icon">📦</div>
+            <div>
+              <h4>Retail refund denials</h4>
+              <p>Merchants obscure your rights and make returns deliberately awkward. Knowing whether to quote the Consumer Rights Act shouldn't require a law degree.</p>
+            </div>
+          </div>
+          <div class="pain-card reveal reveal-delay-3">
+            <div class="pain-icon">🚗</div>
+            <div>
+              <h4>Car rental disputes</h4>
+              <p>Damage charges appear weeks later with little evidence. Without the right paper trail, disputing them feels impossible.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ── Solution ──────────────────────────────────────────────────── -->
+  <section id="solution">
+    <div class="container">
+      <div class="solution-callout reveal">
+        <span class="tag">The solution</span>
+        <h2>Forward the email.<br /><span class="grad-text">We handle everything else.</span></h2>
+        <p>Refunder manages the entire claims process on your behalf — from the first contact to final resolution. No forms. No chasing. No needing to know your rights.</p>
+      </div>
+
+      <!-- ── How it works ── -->
+      <div id="how">
+        <div class="section-header">
+          <span class="tag">How it works</span>
+          <h2>Three steps. Zero effort.</h2>
+          <p>Refunder handles the complexity so you don't have to touch a single form or compose a single complaint email.</p>
+        </div>
+        <div class="steps">
+          <div class="step reveal">
+            <div class="step-num step-num-1">1</div>
+            <h3>Share what happened</h3>
+            <p>Tell us about a delayed flight, rejected return, or disputed charge. A quick message is all we need — no forms, no paperwork.</p>
+          </div>
+          <div class="step reveal reveal-delay-1">
+            <div class="step-num step-num-2">2</div>
+            <h3>We take it from there</h3>
+            <p>Refunder figures out what you're owed and puts together the strongest possible case — applying the right rules for your specific situation.</p>
+          </div>
+          <div class="step reveal reveal-delay-2">
+            <div class="step-num step-num-3">3</div>
+            <h3>You get your money back</h3>
+            <p>We pursue the claim on your behalf, keep you updated on progress, and escalate if the company stalls. You step in only if a decision genuinely needs you.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ── Coverage ───────────────────────────────────────────────────── -->
+  <section id="coverage">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="tag">Coverage</span>
+        <h2>Every claim type, handled.</h2>
+        <p>Whether it's a flight, a purchase, or a rental — if you're owed money, we'll pursue it.</p>
+      </div>
+      <div class="coverage-grid">
+        <div class="coverage-card reveal">
+          <span class="coverage-emoji">✈️</span>
+          <h3>Flight delays &amp; cancellations</h3>
+          <p>Delayed arrivals, cancelled flights, denied boarding — if your journey didn't go to plan, you're likely entitled to compensation. We handle the claim from start to finish.</p>
+          <span class="coverage-amount">Up to £520 per passenger</span>
+        </div>
+        <div class="coverage-card reveal reveal-delay-1">
+          <span class="coverage-emoji">🛍️</span>
+          <h3>Retail &amp; e-commerce refunds</h3>
+          <p>Faulty goods, orders that never arrived, returns that were unfairly refused. You have more rights than most retailers let on — we make sure they're enforced.</p>
+          <span class="coverage-amount">Full refund + statutory rights</span>
+        </div>
+        <div class="coverage-card reveal reveal-delay-2">
+          <span class="coverage-emoji">🚗</span>
+          <h3>Car disputes</h3>
+          <p>Rental damage charges, withheld deposits, unexplained fees — or a dealer refusing to return a deposit on a vehicle purchase. If money was taken unfairly, we'll pursue it back.</p>
+          <span class="coverage-amount">Deposit &amp; damage recovery</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ── Roadmap ────────────────────────────────────────────────────── -->
+  <section id="roadmap">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="tag">Roadmap</span>
+        <h2>Building towards full autonomy.</h2>
+        <p>Refunder starts by tracking and organising your claims. The goal is a system that handles everything — right through to resolution — without needing you at all.</p>
+      </div>
+      <div class="roadmap-grid">
+        <div class="roadmap-card active reveal">
+          <span class="phase-label">Phase 1</span>
+          <span class="phase-status status-live">Live now</span>
+          <h3>Never miss a claim</h3>
+          <ul class="roadmap-list">
+            <li>Every claim opportunity identified and tracked</li>
+            <li>Full visibility across flights, retail, and rentals</li>
+            <li>Stay on top of what you're owed — effortlessly</li>
+          </ul>
+        </div>
+        <div class="roadmap-card reveal reveal-delay-1">
+          <span class="phase-label">Phase 2</span>
+          <span class="phase-status status-next">Coming next</span>
+          <h3>We do the chasing</h3>
+          <ul class="roadmap-list">
+            <li>Claims submitted and followed up on your behalf</li>
+            <li>Escalation handled if companies stall or reject</li>
+            <li>You're kept informed — without the back-and-forth</li>
+          </ul>
+        </div>
+        <div class="roadmap-card reveal reveal-delay-2">
+          <span class="phase-label">Phase 3</span>
+          <span class="phase-status status-planned">Planned</span>
+          <h3>Zero-touch resolution</h3>
+          <ul class="roadmap-list">
+            <li>Claims resolved however the merchant requires</li>
+            <li>Supporting evidence gathered and presented automatically</li>
+            <li>Escalation to formal dispute resolution when needed</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ── Why ───────────────────────────────────────────────────────── -->
+  <section id="why">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="tag">Why Refunder</span>
+        <h2>Your money back.<br />Without the hassle.</h2>
+      </div>
+      <div class="why-strip">
+        <div class="why-item reveal">
+          <span class="why-item-icon">⚖️</span>
+          <h3>We know your rights</h3>
+          <p>You shouldn't need to research legislation to get money you're already owed. We handle that part.</p>
+        </div>
+        <div class="why-item reveal reveal-delay-1">
+          <span class="why-item-icon">🔄</span>
+          <h3>Nothing slips through</h3>
+          <p>Most claims go unpursued simply because life gets in the way. Refunder stays on it so you don't have to.</p>
+        </div>
+        <div class="why-item reveal reveal-delay-2">
+          <span class="why-item-icon">🔒</span>
+          <h3>You're always in control</h3>
+          <p>Full visibility on every claim. Nothing irreversible happens without your say-so.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── CTA ───────────────────────────────────────────────────────── -->
+  <section id="cta">
+    <div class="container">
+      <div class="cta-card reveal">
+        <span class="tag">Early access</span>
+        <h2>Get back what you're owed.<br /><span class="grad-text">Without lifting a finger.</span></h2>
+        <p>Refunder is in private beta. Join the waitlist and be among the first to try it when we open up to new users.</p>
+        <form class="cta-form" id="cta-form">
+          <input type="email" name="EMAIL" placeholder="your@email.com" required />
+          <input type="text" name="b_10e96d31485b059b474eb5d91_0255c8292f" tabindex="-1" value="" style="position:absolute;left:-5000px;" aria-hidden="true" />
+          <button type="submit" class="btn btn-primary">Join the waitlist →</button>
+        </form>
+        <div class="success-msg" id="cta-success">
+          <div class="check">✓</div>
+          <p>You're on the list!</p>
+          <small>We'll be in touch when early access opens. No spam — promise.</small>
+        </div>
+        <p class="cta-note">Free to join &nbsp;·&nbsp; No credit card required &nbsp;·&nbsp; UK beta</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ────────────────────────────────────────────────────── -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <a href="#" class="footer-logo">Refunder</a>
+        <p class="footer-legal">&copy; <span id="footer-year"></span> Refunder. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Footer year ───────────────────────────────────────────────────
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    // ── Nav scroll state ──────────────────────────────────────────────
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+
+    // ── Scroll reveal ─────────────────────────────────────────────────
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ── Mailchimp submission ──────────────────────────────────────────
+    const MC_URL = 'https://gmail.us11.list-manage.com/subscribe/post?u=10e96d31485b059b474eb5d91&id=0255c8292f&f_id=003309e1f0';
+
+    function submitToMailchimp(email) {
+      const body = new FormData();
+      body.append('EMAIL', email);
+      body.append('b_10e96d31485b059b474eb5d91_0255c8292f', '');
+      // no-cors: we can't read the response but the submission lands in Mailchimp
+      fetch(MC_URL, { method: 'POST', body, mode: 'no-cors' }).catch(() => {});
+    }
+
+    // ── Hero form ─────────────────────────────────────────────────────
+    document.getElementById('hero-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = this.querySelector('input[name="EMAIL"]').value;
+      submitToMailchimp(email);
+      // Pre-fill CTA form and scroll down to it
+      document.querySelector('#cta input[name="EMAIL"]').value = email;
+      document.getElementById('cta').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // ── CTA form ──────────────────────────────────────────────────────
+    document.getElementById('cta-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = this.querySelector('input[name="EMAIL"]').value;
+      submitToMailchimp(email);
+      this.style.display = 'none';
+      document.getElementById('cta-success').classList.add('show');
+    });
+  </script>
+</body>
+</html>

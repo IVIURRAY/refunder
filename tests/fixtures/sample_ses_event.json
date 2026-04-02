@@ -1,0 +1,47 @@
+{
+  "Records": [
+    {
+      "eventSource": "aws:ses",
+      "eventVersion": "1.0",
+      "ses": {
+        "mail": {
+          "timestamp": "2024-04-15T09:23:41.000Z",
+          "source": "ba.compensation@britishairways.com",
+          "messageId": "20240415092341.BA123456.britishairways.com",
+          "destination": ["claims@refundagent.com"],
+          "headersTruncated": false,
+          "headers": [
+            {"name": "From", "value": "ba.compensation@britishairways.com"},
+            {"name": "To", "value": "claims@refundagent.com"},
+            {"name": "Subject", "value": "Your UK261 Compensation Claim — Booking Reference BA123456"},
+            {"name": "Date", "value": "Mon, 15 Apr 2024 09:23:41 +0100"},
+            {"name": "Message-ID", "value": "<20240415092341.BA123456@britishairways.com>"}
+          ],
+          "commonHeaders": {
+            "from": ["ba.compensation@britishairways.com"],
+            "to": ["claims@refundagent.com"],
+            "date": "Mon, 15 Apr 2024 09:23:41 +0100",
+            "messageId": "20240415092341.BA123456.britishairways.com",
+            "subject": "Your UK261 Compensation Claim — Booking Reference BA123456"
+          }
+        },
+        "receipt": {
+          "timestamp": "2024-04-15T09:23:42.000Z",
+          "processingTimeMillis": 745,
+          "recipients": ["claims@refundagent.com"],
+          "spamVerdict": {"status": "PASS"},
+          "virusVerdict": {"status": "PASS"},
+          "spfVerdict": {"status": "PASS"},
+          "dkimVerdict": {"status": "PASS"},
+          "dmarcVerdict": {"status": "PASS"},
+          "action": {
+            "type": "S3",
+            "topicArn": "arn:aws:sns:eu-west-1:123456789012:refundagent-inbound",
+            "bucketName": "refundagent-raw-emails",
+            "objectKey": "2024/04/15/20240415092341.BA123456.britishairways.com.eml"
+          }
+        }
+      }
+    }
+  ]
+}

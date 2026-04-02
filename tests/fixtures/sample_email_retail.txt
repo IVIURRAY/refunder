@@ -1,0 +1,32 @@
+From: auto-confirm@amazon.co.uk
+To: customer@example.com
+Subject: Your refund for order 123-4567890-1234567
+Date: Tue, 16 Apr 2024 14:05:19 +0000
+Message-ID: <20240416140519.AMZ.123-4567890@amazon.co.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Hello,
+
+We've processed your return and a refund is on its way.
+
+Order number:   123-4567890-1234567
+Return reason:  Item not as described
+Refund amount:  £34.99
+Refund method:  Original payment method (Visa ending 4242)
+Expected date:  5–7 business days from today
+
+Here's a summary of what's happening:
+
+  1. We received your returned item on 15 April 2024.
+  2. Our returns team has inspected the item.
+  3. A refund of £34.99 has been authorised and is being processed.
+
+Your refund should appear on your Visa ending 4242 within 5–7 business days, depending on your bank's processing time.
+
+If you don't see the refund after 7 business days, please contact us and reference order number 123-4567890-1234567.
+
+Thank you for shopping with us.
+
+Amazon Customer Service
+www.amazon.co.uk

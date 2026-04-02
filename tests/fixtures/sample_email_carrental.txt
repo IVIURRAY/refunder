@@ -1,0 +1,32 @@
+From: disputes@hertz.co.uk
+To: customer@example.com
+Subject: Damage Charge Notice — Rental Agreement RA-2024-987654
+Date: Wed, 17 Apr 2024 10:30:00 +0100
+Message-ID: <20240417103000.HERTZ.RA2024987654@hertz.co.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Dear Customer,
+
+We are writing regarding your recent rental under agreement RA-2024-987654.
+
+Following a post-rental inspection of the vehicle (2024 Ford Focus, registration AB24 XYZ), our damage assessment team has identified damage that was not present on the vehicle at the time of collection and was not noted on the original rental agreement.
+
+Details of the charge:
+
+  Rental Agreement:  RA-2024-987654
+  Rental Period:     10 April 2024 – 14 April 2024
+  Pick-up Location:  Hertz London Heathrow, Terminal 5
+  Drop-off Location: Hertz London Heathrow, Terminal 5
+  Damage Description: Scratch on rear bumper, left side
+  Damage Charge:     £250.00
+
+This amount of £250.00 will be charged to the credit card on file within 7 business days unless you wish to dispute this charge.
+
+TO DISPUTE THIS CHARGE:
+If you believe this charge has been applied in error, please respond to this email within 14 days with any supporting evidence (photographs taken at collection/return, dashcam footage, etc.). We will review your dispute and respond within 10 business days.
+
+Hertz Dispute Resolution Team
+Hertz UK Customer Services
+disputes@hertz.co.uk
+0800 400 900

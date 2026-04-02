@@ -1,0 +1,38 @@
+From: ba.compensation@britishairways.com
+To: customer@example.com
+Subject: Your UK261 Compensation Claim — Booking Reference BA123456
+Date: Mon, 15 Apr 2024 09:23:41 +0100
+Message-ID: <20240415092341.BA123456@britishairways.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Dear Mr Smith,
+
+Thank you for contacting British Airways regarding your recent flight experience.
+
+We are writing in response to your compensation claim under UK Retained Regulation (EC) No 261/2004 for the following flight:
+
+Flight Number:  BA117
+Route:          London Heathrow (LHR) to New York John F. Kennedy (JFK)
+Date of Travel: 15 March 2024
+Booking Reference: BA123456
+
+After reviewing our operational records, we can confirm that flight BA117 on 15 March 2024 arrived at its destination with a delay of 4 hours 30 minutes. As this delay exceeds the 3-hour threshold defined under UK261 legislation, you are entitled to compensation.
+
+Based on the distance of this route (in excess of 3,500km), the applicable compensation is:
+
+    £520.00 per passenger
+
+We are currently processing your claim. You can expect to receive payment to the bank account details you provided within 14 business days. Your claim reference number is BA123456.
+
+If you have any questions regarding your claim, please do not hesitate to contact our Customer Relations team.
+
+Yours sincerely,
+
+Customer Relations
+British Airways
+PO Box 1126
+Uxbridge, UB8 9XS
+United Kingdom
+
+This email and any attachments are confidential and may be legally privileged.
